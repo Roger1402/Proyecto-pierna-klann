@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Pierna Klann · Banco de pruebas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#0f1418; --panel:#182027; --line:#2a3540; --fg:#e6edf2; --muted:#8fa1b0;
+          --acc:#f28c38; --ok:#3fbf7f; --bad:#e5534b; --sim:#7aa7ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:13px/1.4 "Segoe UI",system-ui,sans-serif; }
+  header { padding:10px 16px; border-bottom:1px solid var(--line); display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+  header h1 { font-size:16px; margin:0; }
+  #estado { padding:3px 10px; border-radius:12px; background:#2a3540; font-size:12px; }
+  #estado.on { background:var(--ok); color:#06170e; }
+  main { display:grid; grid-template-columns: minmax(0,1.35fr) minmax(320px,1fr); gap:10px; padding:10px; }
+  #vista { position:relative; background:#0b0f12; border:1px solid var(--line); border-radius:8px; min-height:440px; }
+  #vista canvas { display:block; width:100%; height:100%; border-radius:8px; }
+  #hud { position:absolute; left:10px; top:8px; font-size:12px; color:var(--muted); pointer-events:none; }
+  #hud b { color:var(--fg); font-variant-numeric:tabular-nums; }
+  .col { display:flex; flex-direction:column; gap:10px; min-width:0; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  .panel h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px; }
+  .fila { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:4px 0; }
+  button { background:#24303a; color:var(--fg); border:1px solid #3a4856; border-radius:6px; padding:5px 10px; cursor:pointer; font:inherit; }
+  button:hover { border-color:var(--acc); }
+  button.pri { background:var(--acc); color:#1a0e04; border-color:var(--acc); font-weight:600; }
+  button.rec { background:var(--bad); border-color:var(--bad); color:#fff; }
+  button:disabled { opacity:.45; cursor:default; }
+  input[type=number] { width:72px; background:#0f1418; color:var(--fg); border:1px solid #3a4856; border-radius:5px; padding:3px 5px; font:inherit; }
+  input[type=range] { flex:1; min-width:120px; accent-color:var(--acc); }
+  select { background:#0f1418; color:var(--fg); border:1px solid #3a4856; border-radius:5px; padding:3px; font:inherit; }
+  table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+  td, th { padding:2px 4px; border-bottom:1px solid var(--line); text-align:left; font-size:12px; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); } .muted { color:var(--muted); font-size:12px; }
+  .graf { width:100%; height:190px; display:block; background:#0b0f12; border-radius:6px; }
+  #grafs { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:10px; padding:0 10px 10px; }
+  @media (max-width: 1000px) { main, #grafs { grid-template-columns: 1fr; } }
+  @media (min-width: 1001px) {
+    html, body { height:100%; } body { display:grid; grid-template-rows:auto minmax(0,1fr) 250px; overflow:hidden; }
+    main { min-height:0; } main > .col { overflow:auto; } #vista { min-height:0; }
+    #grafs .panel { min-height:0; }
+  }
+  #vista canvas { position:absolute; inset:0; } #hud { z-index:2; }
+</style>
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+</head>
+<body>
+<header>
+  <h1>Pierna Klann · banco de pruebas</h1>
+  <span id="estado">Simulación</span>
+  <button id="btnConectar" class="pri">Conectar ESP32</button>
+  <label><input type="radio" name="modo" value="sim" checked> Simulación</label>
+  <label><input type="radio" name="modo" value="esp"> ESP32 (datos reales)</label>
+</header>
+
+<main>
+  <div id="vista"><div id="hud">θ₂ = <b id="hAng">0</b>° · manivela <b id="hRpm">0</b> rpm · T₂ est. <b id="hT">–</b> mN·m</div></div>
+  <div class="col">
+    <div class="panel">
+      <h2>Medición</h2>
+      <div class="fila"><button id="btnRec" class="pri">● Iniciar medición</button>
+        <button id="btnDescartar" disabled>Descartar</button>
+        <button id="btnCsv" disabled>Descargar otra vez</button></div>
+      <div id="recInfo" class="muted">Solo se guarda lo que pase entre Iniciar y Detener.</div>
+    </div>
+    <div class="panel">
+      <h2>Control del motor</h2>
+      <div class="fila">PWM <input id="pwm" type="range" min="0" max="100" value="0"><b id="pwmTxt">0 %</b></div>
+      <div class="fila">
+        <button id="btnCero">Ángulo cero (z)</button>
+        <button id="btnInv">Invertir giro (r)</button>
+        <label><input id="invEnc" type="checkbox"> invertir lectura del encoder</label>
+      </div>
+      <div id="diag" class="muted">Sin datos del ESP32.</div>
+      <div class="fila">Cuentas por vuelta de manivela <input id="cpv" type="number" value="3950" step="0.1">
+        <input id="nVueltas" type="number" value="5" min="1" style="width:48px"> vueltas antihorarias
+        <button id="btnVuelta">Contar vueltas</button></div>
+      <div class="muted">En simulación, el PWM fija la velocidad con la misma recta torque-velocidad del motor, así se ve cómo frena la carga.</div>
+    </div>
+    <div class="panel">
+      <h2>Mecanismo de Klann</h2>
+      <div class="fila">Radio de manivela
+        <select id="radio"><option>16</option><option>18</option><option selected>20</option></select> mm
+        <label><input id="carga" type="checkbox" checked> carga de apoyo (5 N)</label>
+      </div>
+      <table id="tablaK"></table>
+    </div>
+    <div class="panel">
+      <h2>Calibración torque–velocidad (carrete en el eje del motor)</h2>
+      <div class="fila">masa <input id="masa" type="number" value="100" step="50"> g
+        radio carrete <input id="rCarrete" type="number" value="10.4" step="0.1"> mm
+        <button id="btnCapt">Capturar 3 s</button></div>
+      <table id="tablaCal"><tr><th>masa (g)</th><th>rpm motor</th><th>T (mN·m)</th></tr></table>
+      <div class="fila"><button id="btnAjuste">Ajustar recta</button> <button id="btnBorrar">Borrar</button></div>
+      <div class="fila">T<sub>m</sub> = a − b·rpm &nbsp; a <input id="a" type="number" value="150" step="1"> mN·m
+        &nbsp; b <input id="b" type="number" value="0.60" step="0.01"> mN·m/rpm</div>
+      <div class="muted" id="calInfo">Valores de ejemplo (recta a PWM 100 %): reemplazar con la calibración real. Calibrar con el mismo PWM que se usará en la marcha.</div>
+    </div>
+  </div>
+</main>
+
+<section id="grafs">
+  <div class="panel"><h2>Trayectoria del pie (LED)</h2><canvas id="gTray" class="graf"></canvas></div>
+  <div class="panel"><h2>Torque en la manivela vs ángulo</h2><canvas id="gTorque" class="graf"></canvas></div>
+  <div class="panel"><h2>Velocidad de la manivela</h2><canvas id="gRpm" class="graf"></canvas></div>
+</section>
+<script type="module" src="app.js?v=7"></script>
+</body>
+</html>

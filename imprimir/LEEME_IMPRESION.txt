@@ -1,0 +1,70 @@
+PIERNA KLANN - INDICACIONES DE IMPRESION
+========================================
+
+Unidades: mm. Escala: 100 % (NO escalar). Todas las piezas ya vienen
+orientadas: la cara que va sobre la cama esta en z = 0. No requieren soportes.
+Pieza mas grande: placa, 128 x 147 mm (entra en cama de 220 x 220).
+
+MATERIAL
+--------
+PLA (PETG tambien sirve). Si se puede:
+  - placa y base en color OSCURO (negro): es el fondo para grabar el LED.
+  - eslabones en un color claro o que contraste.
+
+PASO 0: PRUEBA DE ENGRANE (imprimir PRIMERO, ~20-30 min)
+--------------------------------------------------------
+Los engranajes son HELICOIDALES (helice de 20 grados, uno derecho y otro izquierdo:
+asi tiene que ser, no es un error). Los engranajes impresos suelen salir con los
+dientes un poco mas gruesos, y cada impresora tiene su propio error. Por eso:
+
+  1. Imprimir prueba_engrane.stl con la MISMA configuracion que se usara para los
+     engranajes finales (capa 0.12-0.16, 100 %, compensacion de pata de elefante).
+  2. Poner el engranaje grande en el perno grueso del centro.
+  3. Probar el pinon en cada uno de los 3 pernos delgados (marcados con 1, 2 y 3
+     puntos = distancia entre centros 40.5 / 40.7 / 40.9 mm).
+  4. Elegir el perno donde gira SUAVE, sin trabarse en ninguna parte de la vuelta
+     y con poco juego. Lo esperado es el de 2 puntos.
+  5. Avisar a Roger cual fue: si no es el de 2 puntos, se ajusta la placa
+     (la placa es la unica pieza que depende de esto).
+
+Si se traba en los tres: subir la compensacion de pata de elefante o bajar el
+flujo/"horizontal expansion" a -0.05 mm y repetir la prueba.
+
+PIEZAS Y CONFIGURACION
+----------------------
+Archivo                  Cant. Capa    Paredes Relleno  Notas
+-----------------------  ----- ------  ------- -------  ------------------------------
+prueba_engrane.stl         1   0.12-0.16   -    100 %   PRIMERO (ver paso 0)
+engranaje_manivela.stl     1   0.12-0.16   -    100 %   Dientes: imprimir lento (30-40 mm/s)
+pinon.stl                  1   0.12-0.16   -    100 %   Agujero D ajustado (4.0 mm)
+pinon_holgado.stl          1   0.12-0.16   -    100 %   Repuesto: agujero D 4.2 mm
+biela.stl                  1   0.20        4    40 %    Gyroid o rejilla
+balancin_superior.stl      1   0.20        4    40 %
+balancin_inferior.stl      1   0.20        4    40 %
+pierna.stl                 1   0.20        4    40 %
+separadores.stl            2   0.16        -    100 %   2 juegos (uno de repuesto). Brim si se caen
+carrete_calibracion.stl    1   0.16        -    100 %   Para medir el torque del motor
+placa.stl                  1   0.20-0.28   3    20-25 % Cara lisa abajo; tubo del motor hacia arriba
+base.stl                   1   0.20-0.28   3    20-25 %
+
+En todas: 5 capas superiores y 5 inferiores.
+
+PUNTOS IMPORTANTES
+------------------
+1. NO activar "ajuste de agujeros" ni escalar: los agujeros de las juntas son
+   de 3.2 mm a proposito; despues se repasan con broca de 3.2 mm.
+2. Engranajes: activar la compensacion de "pata de elefante" (elephant foot,
+   0.1-0.2 mm) para que la primera capa no engorde los dientes.
+3. Placa: la cara lisa (frente) va sobre la cama. El boss del rodamiento y el
+   tubo del motor quedan hacia arriba. No necesita soportes.
+4. Engranaje grande: la cara con el hexagono va sobre la cama.
+5. Primera capa bien calibrada: la placa y la base son anchas y planas.
+6. Engranajes: ventilador al 100 % y sin "ironing". No lijar los dientes; si hace
+   falta, solo quitar rebabas de la primera capa con una cuchilla.
+7. Imprimir la placa DESPUES de la prueba de engrane.
+
+ESTIMADO
+--------
+Filamento: ~140-160 g en total. Tiempo: ~9-13 h en total (depende de la
+impresora). Si hay que priorizar: primero engranajes, pinones y eslabones
+(~3-4 h); luego placa y base.
