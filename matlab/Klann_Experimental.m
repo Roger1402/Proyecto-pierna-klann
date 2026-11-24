@@ -121,7 +121,7 @@ figure('Color','w','Position',[100 100 900 300]);
 subplot(1,2,1); plot(th, F(:,1),'b', th, Lm(:,1),'r'); grid on; xlim([0 360]); xticks(0:60:360)
 xlabel('\theta_2 (°)'); ylabel('x del pie (mm)'); legend('simulada','medida')
 subplot(1,2,2); plot(th, F(:,2),'b', th, Lm(:,2),'r'); grid on; xlim([0 360]); xticks(0:60:360)
-xlabel('\theta_2 (°)'); ylabel('y del pie (mm)'); legend('simulada','medida')
+xlabel('\theta_2 (°)'); ylabel('y del pie (mm)'); ylim([-75 5]); legend('simulada','medida','Location','northwest')
 guardar('fig_exp_xy');
 
 %% 6) VELOCIDAD DEL PIE Y DE LA MANIVELA
@@ -134,8 +134,8 @@ figure('Color','w','Position',[100 100 900 300]);
 subplot(1,2,1); plot(te, rpm, 'Color',[.2 .4 .8]); grid on; xlabel('t (s)'); ylabel('n_2 (rpm)'); ylim([0 60])
 title('manivela (encoder)')
 subplot(1,2,2); yyaxis left
-plot(th, vecnorm(Vs,2,2), th, vecnorm(Vm,2,2), '--'); ylabel('|v_F| (mm/s)')
-yyaxis right; plot(th, wm2); ylabel('n_2 (rpm)'); ylim([0 60])
+plot(th, vecnorm(Vs,2,2), th, vecnorm(Vm,2,2), '--'); ylabel('|v_F| (mm/s)'); ylim([0 450])
+yyaxis right; plot(th, wm2); ylabel('n_2 (rpm)'); ylim([0 90])
 grid on; xlim([0 360]); xticks(0:60:360); xlabel('\theta_2 (°)'); legend('|v_F| simulada','|v_F| medida','n_2 medida')
 guardar('fig_exp_velocidad');
 
@@ -160,7 +160,7 @@ subplot(1,2,1); plot(ta, A.I_fuente_A, 'Color',[.2 .4 .8]); grid on; xlabel('t (
 subplot(1,2,2); hold on; grid on
 fill([th fliplr(th)], 1e3*kT2*[KtMin*Im; flipud(KtMax*Im)]', [1 .85 .85], 'EdgeColor','none')
 plot(th, 1e3*T2m, 'r', 'LineWidth',1.5); plot(th, 1e3*T2s, 'b', 'LineWidth',1.5)
-xlim([0 360]); xticks(0:60:360); xlabel('\theta_2 (°)'); ylabel('T_2 (mN·m)')
+xlim([0 360]); xticks(0:60:360); xlabel('\theta_2 (°)'); ylabel('T_2 (mN·m)'); ylim([-20 600])
 legend('banda por K_t','estimado: K_t I','simulado sin fricción')
 guardar('fig_exp_torque');
 

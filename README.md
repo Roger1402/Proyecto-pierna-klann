@@ -9,6 +9,7 @@ Proyecto final MT4003 Mecanismos y Transmisión de Movimiento - UTEC 2026-2.
 | `interfaz/` | Interfaz web de control y medición con el ESP32 |
 | `circuito/` | Firmware del ESP32-S3 y diagramas |
 | `cad/`, `imprimir/` | Modelos STEP y STL |
+| `solidworks/` | Ensamble, scripts, trayectoria y video (`Klann_SolidWorks.mp4`) |
 | `figuras/` | Figuras del informe |
 
 Uso: abrir MATLAB en `matlab/` y ejecutar `Klann_Main` y `Klann_Experimental`.

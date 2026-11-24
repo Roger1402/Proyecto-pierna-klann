@@ -49,7 +49,7 @@ for i = 1:numel(x0)
 end
 subplot(1,2,2); bar(categorical(nombres, nombres), E); grid on
 ylabel('elasticidad (-)'); legend('alto del paso h','ancho del paso S')
-exportgraphics(gcf, fullfile('..','overleaf','figuras','fig_sensibilidad.pdf'), 'ContentType','vector');
+exportgraphics(gcf, fullfile('..','figuras','fig_sensibilidad.pdf'), 'ContentType','vector');
 disp(array2table(X, 'VariableNames', {'r','CE','BE','AH','KH'}))
 
 %% ---------------- funciones locales ----------------
