@@ -46,7 +46,7 @@ figure('Color','w','Position',[100 100 900 260]);
 for k = 1:4
     subplot(1,4,k); hold on; axis equal; grid on
     dibujar(Q{1+(k-1)*90}, P); plot(F(1,:),F(2,:),'r');
-    title(sprintf('\\theta_2-\\theta_{2,0} = %d°',(k-1)*90)); xlim([-128 12]); ylim([-68 68]); xlabel('x (mm)')
+    title(sprintf('\\theta_2-\\theta_{2,0} = %d°',(k-1)*90)); xlim([-132 28]); ylim([-70 90]); xlabel('x (mm)')
 end
 guardar('fig_secuencia');
 
